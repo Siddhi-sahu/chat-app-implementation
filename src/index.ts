@@ -13,7 +13,9 @@ const app = express();
 const server = createServer(app);
 
 //This binds Socket.io to the same HTTP server.
-const io = new Server(server);
+const io = new Server(server, {
+    connectionStateRecovery: {}
+});
 
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
