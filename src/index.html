@@ -24,7 +24,9 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io({
-        auth: {serverOffset: 0}
+        auth: {serverOffset: 0},
+        ackTimeout: 5000, //wait 5 sec for the ack
+        retries: 3, // Retry up to 3 times if no ack
       });
 
       const form = document.getElementById("form");
@@ -34,6 +36,11 @@
       form.addEventListener('submit', (e)=>{
         e.preventDefault();
         if(input.value){
+          //append users sent message instantly and not rely on backend to send back the user message
+          const item = document.createElement("li");
+          item.textContent = input.value;
+          messages.appendChild(item);
+
           socket.emit('chat message', input.value);
           input.value='';
         }

@@ -35,7 +35,7 @@ io.on('connection', async (socket) => {
         console.log("user disconnected")
     })
 
-    socket.on('chat message', async (msg) => {
+    socket.on('chat message', async (msg, callback) => {
         try {
             //store msg in db
             const message = await prisma.message.create({
@@ -45,7 +45,10 @@ io.on('connection', async (socket) => {
             })
 
             //send msg with Id(serveroffset) to all the clients
-            io.emit('chat message', message.content, message.id);
+            socket.broadcast.emit('chat message', message.content, message.id);
+
+            // Send acknowledgment to the client
+            callback();
         } catch (e) {
             console.log("error saving msg", e)
         }
